@@ -1,0 +1,11 @@
+[Unit]
+Description=bigip exporter  service
+
+[Service]
+ExecStart=/usr/bin/bigip_exporter --config.file=/etc/prometheus/bigip_exporter.yml 
+Restart=always
+RestartSec=2s
+StartLimitInterval=0
+KillMode=process
+[Install]
+WantedBy=multi-user.target

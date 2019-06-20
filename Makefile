@@ -9,8 +9,8 @@ GOVENDOR     := $(FIRST_GOPATH)/bin/govendor
 GODEP				 := $(FIRST_GOPATH)/bin/dep
 pkgs          = ./...
 
-PREFIX                  ?= $(shell pwd)
-BIN_DIR                 ?= $(shell pwd)
+PREFIX                  ?= $(shell pwd)/build
+BIN_DIR                 ?= $(shell pwd)/build
 
 all: deps vet fmt style staticcheck unused  build test
 
@@ -60,6 +60,10 @@ unused:
 build: | $(PROMU)
 	@echo ">> building binaries"
 	$(PROMU) build --prefix $(PREFIX)
+
+buildrpm: | $(PROMU) build
+	@echo ">> building binaries"
+	./scripts/build_rpm.sh
 
 deps:  | $(GODEP)
 	@echo ">> update the dependencies"

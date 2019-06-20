@@ -1,0 +1,7 @@
+modules:
+    default:
+        user: "user"
+        pass: "password"
+    192.168.100.237:30015:
+        user: "SYSTEM"
+        pass: "Password"
