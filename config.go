@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
-	"sync"
 	"github.com/prometheus/common/log"
 	yaml "gopkg.in/yaml.v2"
+	"io/ioutil"
+	"sync"
 )
 
 // Config is the Go representation of the yaml config file.
@@ -22,9 +22,9 @@ type SafeConfig struct {
 // Credentials is the Go representation of the credentials section in the yaml
 // config file.
 type Credentials struct {
-	User     string `yaml:"user"`
-	Password string `yaml:"pass"`
-	BasicAuth bool  `yaml:"basic_auth"`
+	User      string `yaml:"user"`
+	Password  string `yaml:"pass"`
+	BasicAuth bool   `yaml:"basic_auth"`
 }
 
 func (sc *SafeConfig) ReloadConfig(configFile string) error {
@@ -56,15 +56,15 @@ func (sc *SafeConfig) CredentialsForTarget(target string) (Credentials, error) {
 	defer sc.Unlock()
 	if credentials, ok := sc.C.Credentials[target]; ok {
 		return Credentials{
-			User:     credentials.User,
-			Password: credentials.Password,
+			User:      credentials.User,
+			Password:  credentials.Password,
 			BasicAuth: credentials.BasicAuth,
 		}, nil
 	}
 	if credentials, ok := sc.C.Credentials["default"]; ok {
 		return Credentials{
-			User:     credentials.User,
-			Password: credentials.Password,
+			User:      credentials.User,
+			Password:  credentials.Password,
 			BasicAuth: credentials.BasicAuth,
 		}, nil
 	}

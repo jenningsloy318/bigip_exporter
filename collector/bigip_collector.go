@@ -11,7 +11,7 @@ import (
 
 // A BigipCollector implements the prometheus.Collector.
 type BigipCollector struct {
-	collectors            map[string]prometheus.Collector
+	collectors          map[string]prometheus.Collector
 	totalScrapeDuration prometheus.Summary
 }
 

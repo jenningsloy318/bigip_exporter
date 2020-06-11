@@ -61,6 +61,9 @@ Take a look at this [example configuration file](https://github.com/jenningsloy3
 ## Tested versions of iControl REST API
 Currently only version 12.0.0 and 12.1.1 are tested. If you experience any problems with other versions, create an issue explaining the problem and I'll look at it as soon as possible or if you'd like to contribute with a pull request that would be greatly appreciated.
 
+
+**13.0 is not supported now**
+
 ## Building
 
 just you can build with `make build`

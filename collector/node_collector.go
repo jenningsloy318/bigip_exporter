@@ -10,9 +10,9 @@ import (
 
 // A NodeCollector implements the prometheus.Collector.
 type NodeCollector struct {
-	metrics                   map[string]nodeMetric
-	bigip                     *f5.Device
-	partitionsList           []string
+	metrics                 map[string]nodeMetric
+	bigip                   *f5.Device
+	partitionsList          []string
 	collectorScrapeStatus   *prometheus.GaugeVec
 	collectorScrapeDuration *prometheus.SummaryVec
 }
@@ -171,7 +171,7 @@ func NewNodeCollector(bigip *f5.Device, namespace string, partitionsList []strin
 			},
 			[]string{"collector"},
 		),
-		bigip:           bigip,
+		bigip:          bigip,
 		partitionsList: partitionsList,
 	}, nil
 }

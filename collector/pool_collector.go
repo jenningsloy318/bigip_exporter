@@ -10,9 +10,9 @@ import (
 
 // A PoolCollector implements the prometheus.Collector.
 type PoolCollector struct {
-	metrics                   map[string]poolMetric
-	bigip                     *f5.Device
-	partitionsList           []string
+	metrics                 map[string]poolMetric
+	bigip                   *f5.Device
+	partitionsList          []string
 	collectorScrapeStatus   *prometheus.GaugeVec
 	collectorScrapeDuration *prometheus.SummaryVec
 }
@@ -339,7 +339,7 @@ func NewPoolCollector(bigip *f5.Device, namespace string, partitionsList []strin
 			},
 			[]string{"collector"},
 		),
-		bigip:           bigip,
+		bigip:          bigip,
 		partitionsList: partitionsList,
 	}, nil
 }

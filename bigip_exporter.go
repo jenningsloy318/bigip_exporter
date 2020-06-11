@@ -1,8 +1,12 @@
 package main
 
 import (
-	"net/http"
 	"fmt"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+
 	"github.com/jenningsloy318/bigip_exporter/collector"
 	"github.com/pr8kerl/f5er/f5"
 	"github.com/prometheus/client_golang/prometheus"
@@ -10,11 +14,7 @@ import (
 	"github.com/prometheus/common/log"
 	"github.com/prometheus/common/version"
 	"gopkg.in/alecthomas/kingpin.v2"
-	"os"
-	"os/signal"
-	"syscall"
 )
-
 
 // define  flag
 var (
@@ -53,21 +53,19 @@ func newHandler() http.HandlerFunc {
 		}
 		user := targetCredentials.User
 		password := targetCredentials.Password
-		basicauth :=targetCredentials.BasicAuth
+		basicauth := targetCredentials.BasicAuth
 
-		var exporterPartitionsList []string  = nil
-		 
- 
+		var exporterPartitionsList []string = nil
+
 		authMethod := f5.TOKEN
 		if basicauth {
 			authMethod = f5.BASIC_AUTH
 		}
-		
+
 		bigip := f5.New(target, user, password, authMethod)
-		Namespace :=  "bigip"
+		Namespace := "bigip"
 		bigipCollector, _ := collector.NewBigipCollector(bigip, Namespace, exporterPartitionsList)
 
-	
 		registry := prometheus.NewRegistry()
 
 		registry.MustRegister(bigipCollector)
@@ -122,7 +120,6 @@ func main() {
 	log.Infoln("Build context", version.BuildContext())
 
 	// Register only scrapers enabled by flag.
-
 
 	// load config  first time
 	hup := make(chan os.Signal)

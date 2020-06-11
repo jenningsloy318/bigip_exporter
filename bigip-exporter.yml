@@ -1,5 +1,5 @@
 credentials:
     default:
-        user: "USER"
-        pass: "password"
-        basic_auth: "false"
+        user: monitor
+        pass: monitor
+        basic_auth: true

@@ -11,8 +11,13 @@ pkgs          = ./...
 
 PREFIX                  ?= $(shell pwd)/build
 BIN_DIR                 ?= $(shell pwd)/build
+VERSION ?= $(shell cat VERSION)
+REVERSION ?=$(shell git log -1 --pretty="%H")
+BRANCH ?=$(shell git rev-parse --abbrev-ref HEAD)
+TIME ?=$(shell date --rfc-3339=seconds)
+HOST ?=$(shell hostname)  
 
-all: deps vet fmt style staticcheck unused  build test
+all:  fmt style staticcheck   build 
 
 ## ignore the error of "Using a deprecated function, variable, constant or field" when static check, refer to https://github.com/dominikh/go-tools/blob/master/cmd/staticcheck/docs/checks/SA1019
 STATICCHECK_IGNORE = \
@@ -33,61 +38,24 @@ check_license:
                exit 1; \
        fi
 
-test-short:
-	@echo ">> running short tests"
-	$(GO) test -short $(pkgs)
-
-test:
-	@echo ">> running all tests"
-	$(GO) test -race $(pkgs)
-
-format:
-	@echo ">> formatting code"
-	$(GO) fmt $(pkgs)
-
-vet:
-	@echo ">> vetting code"
-	$(GO) vet $(pkgs)
 
 staticcheck: | $(STATICCHECK)
 	@echo ">> running staticcheck"
 	$(STATICCHECK) -ignore "$(STATICCHECK_IGNORE)" $(pkgs)
 
-unused: 
-	@echo ">> running check for unused packages"
-	@$(GOVENDOR) list +unused | grep . && exit 1 || echo 'No unused packages'
-
-build: | $(PROMU)
+build: 
 	@echo ">> building binaries"
-	$(PROMU) build --prefix $(PREFIX)
+	$(GO) build -o $(PREFIX)/bigip_exporter -ldflags  '-X "github.com/prometheus/common/version.Version=$(VERSION)" -X "github.com/prometheus/common/version.Branch=$(BRANCH)" -X "github.com/prometheus/common/version.Revision=$(REVERSION)" -X "github.com/prometheus/common/version.BuildUser=$(USER)"  -X "github.com/prometheus/common/version.BuildDate=$(TIME)"  '
 
-buildrpm: | $(PROMU) build
+rpm: | build
 	@echo ">> building binaries"
 	./scripts/build_rpm.sh
-
-deps:  | $(GODEP)
-	@echo ">> update the dependencies"
-	$(GODEP) ensure -update
-
-tarball:  | $(PROMU) build
-	@echo ">> building release tarball"
-	$(PROMU) tarball --prefix $(PREFIX) $(BIN_DIR)
 
 fmt:
 	@echo ">> format code style"
 	$(GOFMT) -w $$(find . -path ./vendor -prune -o -name '*.go' -print) 
 
-
-$(GODEP):
-	GOOS= GOARCH= $(GO) get -u github.com/golang/dep/cmd/dep
-
-$(PROMU):
-	GOOS= GOARCH= $(GO) get -u github.com/prometheus/promu
-
 $(STATICCHECK):
 	GOOS= GOARCH= $(GO) get -u honnef.co/go/tools/cmd/staticcheck
 
-$(GOVENDOR):
-	GOOS= GOARCH= $(GO) get -u github.com/kardianos/govendor
-
-.PHONY: all style check_license format build test vet assets tarball fmt $(GODEP)  $(PROMU) $(STATICCHECK) $(GOVENDOR)
+.PHONY: all style check_license  build fmt  $(STATICCHECK) 
